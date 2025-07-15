@@ -30,9 +30,9 @@ class _WebColorPickState extends State<WebColorPick> {
       text: _colorToHex(color, withHash: false),
     );
     _rgbaControllers = {
-      'R': TextEditingController(text: color.red.toString()),
-      'G': TextEditingController(text: color.green.toString()),
-      'B': TextEditingController(text: color.blue.toString()),
+      'R': TextEditingController(text: color.r.toInt().toString()),
+      'G': TextEditingController(text: color.g.toInt().toString()),
+      'B': TextEditingController(text: color.b.toInt().toString()),
       'A': TextEditingController(
         text: (color.opacity * 100).round().toString(),
       ),
@@ -42,7 +42,9 @@ class _WebColorPickState extends State<WebColorPick> {
   @override
   void dispose() {
     _hexController.dispose();
-    _rgbaControllers.values.forEach((controller) => controller.dispose());
+    for (var controller in _rgbaControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -58,9 +60,9 @@ class _WebColorPickState extends State<WebColorPick> {
   void _updateAllControllers(HSVColor hsvColor) {
     final color = hsvColor.toColor();
     _hexController.text = _colorToHex(color, withHash: false);
-    _rgbaControllers['R']!.text = color.red.toString();
-    _rgbaControllers['G']!.text = color.green.toString();
-    _rgbaControllers['B']!.text = color.blue.toString();
+    _rgbaControllers['R']!.text = color.r.toInt().toString();
+    _rgbaControllers['G']!.text = color.g.toInt().toString();
+    _rgbaControllers['B']!.text = color.b.toInt().toString();
     _rgbaControllers['A']!.text = (hsvColor.alpha * 100).round().toString();
   }
 
@@ -77,9 +79,10 @@ class _WebColorPickState extends State<WebColorPick> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildTopBar(),
-          const SizedBox(height: 12),
-          SizedBox(height: 200, width: double.infinity, child: _buildSvBox()),
+          // _buildTopBar(),
+          // const SizedBox(height: 12),
+          SizedBox(
+              height: boxHeight, width: double.infinity, child: _buildSvBox()),
           const SizedBox(height: 16),
           SizedBox(
             height: 18,
@@ -101,46 +104,47 @@ class _WebColorPickState extends State<WebColorPick> {
     );
   }
 
-  Widget _buildTopBar() {
-    return Row(
-      children: [
-        IconButton(
-          icon: const Icon(Icons.colorize),
-          tooltip: 'Pick color from screen (Not Implemented)',
-          onPressed: _startEyedropper,
-        ),
-        const Spacer(),
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: Theme.of(context).dividerColor),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Container(color: _currentHsvColor.toColor()),
-        ),
-      ],
-    );
-  }
+  // Widget _buildTopBar() {
+  //   return Row(
+  //     children: [
+  //       IconButton(
+  //         icon: const Icon(Icons.colorize),
+  //         tooltip: 'Pick color from screen (Not Implemented)',
+  //         onPressed: _startEyedropper,
+  //       ),
+  //       const Spacer(),
+  //       Container(
+  //         width: 32,
+  //         height: 32,
+  //         decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.circular(4),
+  //           border: Border.all(color: Theme.of(context).dividerColor),
+  //         ),
+  //         clipBehavior: Clip.antiAlias,
+  //         child: Container(color: _currentHsvColor.toColor()),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  void _startEyedropper() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) => EyedropperOverlay(
-        onColorPicked: (color) {
-          _updateColor(HSVColor.fromColor(color));
-          widget.onColorChanged.call(color);
-        },
-      ),
-    );
-  }
+  // void _startEyedropper() {
+  //   showDialog(
+  //     context: context,
+  //     barrierDismissible: true,
+  //     builder: (_) => EyedropperOverlay(
+  //       onColorPicked: (color) {
+  //         _updateColor(HSVColor.fromColor(color));
+  //         widget.onColorChanged.call(color);
+  //       },
+  //     ),
+  //   );
+  // }
 
+  final boxHeight = 150.0;
   Widget _buildSvBox() {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final boxSize = Size(constraints.maxWidth, 200);
+        final boxSize = Size(constraints.maxWidth, boxHeight);
         final indicatorPosition = Offset(
           _currentHsvColor.saturation * boxSize.width,
           (1.0 - _currentHsvColor.value) * boxSize.height,
@@ -335,19 +339,22 @@ class _WebColorPickState extends State<WebColorPick> {
         _buildTextField('R', _rgbaControllers['R']!, (value) {
           final c = _currentHsvColor.toColor();
           _updateColor(
-            HSVColor.fromColor(Color.fromARGB(c.alpha, value, c.green, c.blue)),
+            HSVColor.fromColor(
+                Color.fromARGB(c.a.toInt(), value, c.g.toInt(), c.b.toInt())),
           );
         }, max: 255),
         _buildTextField('G', _rgbaControllers['G']!, (value) {
           final c = _currentHsvColor.toColor();
           _updateColor(
-            HSVColor.fromColor(Color.fromARGB(c.alpha, c.red, value, c.blue)),
+            HSVColor.fromColor(
+                Color.fromARGB(c.a.toInt(), c.r.toInt(), value, c.b.toInt())),
           );
         }, max: 255),
         _buildTextField('B', _rgbaControllers['B']!, (value) {
           final c = _currentHsvColor.toColor();
           _updateColor(
-            HSVColor.fromColor(Color.fromARGB(c.alpha, c.red, c.green, value)),
+            HSVColor.fromColor(
+                Color.fromARGB(c.a.toInt(), c.r.toInt(), c.g.toInt(), value)),
           );
         }, max: 255),
         _buildTextField('A%', _rgbaControllers['A']!, (value) {
@@ -528,12 +535,12 @@ class _WebColorPickState extends State<WebColorPick> {
 }
 
 class _CheckerboardPainter extends CustomPainter {
-  final double squareSize;
 
-  const _CheckerboardPainter({this.squareSize = 10});
+  const _CheckerboardPainter();
 
   @override
   void paint(Canvas canvas, Size size) {
+    final squareSize = 10.0;
     final paint1 = Paint()..color = const Color(0xffcdd2d7);
     final paint2 = Paint()..color = Colors.white;
 
