@@ -32,7 +32,18 @@
     <title>flutter_color</title>
     <link rel="manifest" href="manifest.json">
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <script src="js/pixel_capture.js"></script>
+    <script>
+        captureFlutterApp = async function () {
+  const app = document.body;
+  const canvas = await html2canvas(app, {
+    useCORS: false,
+    backgroundColor: null,
+    logging: true,
+  });
+  const dataUrl = canvas.toDataURL("image/png");
+  return dataUrl;
+};
+    </script>
 </head>
 <body>
 <script src="flutter_bootstrap.js" async></script>
