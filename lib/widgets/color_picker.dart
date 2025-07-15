@@ -66,7 +66,7 @@ class _WebColorPickState extends State<WebColorPick> {
 
   String _colorToHex(Color color, {bool withHash = true}) {
     String hex = color.value.toRadixString(16).padLeft(8, '0').toUpperCase();
-    hex = hex.substring(2); // Remove Alpha from a 6-digit hex
+    hex = hex.substring(2);
     return withHash ? '#$hex' : hex;
   }
 

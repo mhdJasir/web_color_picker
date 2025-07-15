@@ -68,7 +68,7 @@ class _EyedropperOverlayState extends State<EyedropperOverlay> {
               behavior: HitTestBehavior.opaque,
               onTapDown: _onTapDown,
               child: MouseRegion(
-                cursor: SystemMouseCursors.allScroll,
+                cursor: SystemMouseCursors.click,
                 child: Image.memory(
                   Uint8List.fromList(img.encodePng(_image!)),
                   fit: BoxFit.cover,
