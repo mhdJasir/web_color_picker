@@ -1,0 +1,30 @@
+name: web_color_pick
+description: 'A customizable color picker with eyedropper support for Flutter Web.'
+version: 1.0.1
+homepage: https://github.com/mhdJasir/web_color_picker
+repository: https://github.com/mhdJasir/web_color_picker/issues
+license: MIT
+
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  image: ^4.3.0
+  js: ^0.6.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - web/js/pixel_capture.js
+
